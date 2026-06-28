@@ -1,11 +1,14 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM = "Auth <noreply@yourdomain.com>";
+
+function getResend() {
+  return new Resend(process.env.RESEND_API_KEY);
+}
 
 export async function sendVerificationEmail(email: string, token: string) {
   const url = `${process.env.AUTH_URL}/api/v1/verify-email?token=${token}`;
-  await resend.emails.send({
+  await getResend().emails.send({
     from: FROM,
     to: email,
     subject: "Verify your email",
@@ -15,7 +18,7 @@ export async function sendVerificationEmail(email: string, token: string) {
 
 export async function sendPasswordResetEmail(email: string, token: string) {
   const url = `${process.env.AUTH_URL}/api/v1/reset-password?token=${token}`;
-  await resend.emails.send({
+  await getResend().emails.send({
     from: FROM,
     to: email,
     subject: "Reset your password",
@@ -24,7 +27,7 @@ export async function sendPasswordResetEmail(email: string, token: string) {
 }
 
 export async function sendPasswordChangedEmail(email: string) {
-  await resend.emails.send({
+  await getResend().emails.send({
     from: FROM,
     to: email,
     subject: "Your password was changed",

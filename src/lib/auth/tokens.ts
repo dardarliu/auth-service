@@ -45,7 +45,7 @@ export async function signAccessToken(payload: TokenPayload): Promise<string> {
 export async function verifyAccessToken(token: string) {
   const key = await getPublicKey();
   const { payload } = await jwtVerify(token, key, { issuer: ISSUER });
-  return payload as TokenPayload & { iat: number; exp: number; jti: string };
+  return payload as unknown as TokenPayload & { iat: number; exp: number; jti: string };
 }
 
 export async function getJWKS() {

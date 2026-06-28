@@ -37,11 +37,9 @@ export function error(message: string, status: number, code?: string) {
 }
 
 export function getIP(request: NextRequest): string {
-  // On Vercel, x-forwarded-for is set by the platform and trustworthy.
-  // The first value is the client IP (Vercel appends, never trusts client-sent values).
   return (
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    request.ip ||
+    request.headers.get("x-real-ip") ||
     "unknown"
   );
 }

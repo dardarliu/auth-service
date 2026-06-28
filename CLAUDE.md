@@ -66,4 +66,4 @@ All endpoints under `/api/v1`. Auth service issues identity tokens only — cons
 
 ## Status
 
-Pre-implementation. Only `auth-service-plan.md` exists. Phase 1 (foundation) is next: project scaffold, DB migrations, core auth endpoints.
+Phase 1 complete. All core auth endpoints implemented and building successfully. Ready for deployment configuration (env vars, Vercel project setup).
