@@ -10,8 +10,7 @@ export async function POST(request: NextRequest) {
   const rateLimited = await rateLimit(request);
   if (rateLimited) return rateLimited;
 
-  const body = await request.json();
-  const { refresh_token } = body;
+  const refresh_token = request.cookies.get("refresh_token")?.value;
 
   if (!refresh_token) {
     return error("refresh_token is required", 400, "validation_error");
