@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
   response.cookies.set("access_token", "", { maxAge: 0, path: "/" });
   response.cookies.set("refresh_token", "", {
     maxAge: 0,
-    path: "/api/v1/refresh",
+    path: "/api/v1",
   });
   return response;
 }

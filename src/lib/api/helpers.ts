@@ -23,7 +23,7 @@ export function jsonWithTokenCookies(
     httpOnly: true,
     secure: true,
     sameSite: "strict",
-    path: "/api/v1/refresh",
+    path: "/api/v1",
     maxAge: 30 * 24 * 60 * 60,
   });
   return response;
