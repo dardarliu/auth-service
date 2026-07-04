@@ -74,6 +74,10 @@ export async function POST(request: NextRequest) {
     return INVALID_CREDENTIALS;
   }
 
+  if (!user.emailVerified) {
+    return error("Please verify your email before signing in", 403, "email_not_verified");
+  }
+
   // Only a successful login resets the counter
   await db
     .update(users)

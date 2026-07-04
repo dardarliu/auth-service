@@ -15,14 +15,14 @@ export function jsonWithTokenCookies(
   response.cookies.set("access_token", accessToken, {
     httpOnly: true,
     secure: true,
-    sameSite: "strict",
+    sameSite: "none",
     path: "/",
     maxAge: 900,
   });
   response.cookies.set("refresh_token", refreshToken, {
     httpOnly: true,
     secure: true,
-    sameSite: "strict",
+    sameSite: "none",
     path: "/api/v1",
     maxAge: 30 * 24 * 60 * 60,
   });
