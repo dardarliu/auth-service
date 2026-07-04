@@ -5,9 +5,18 @@ import { eq, and, isNull } from "drizzle-orm";
 import { hashToken } from "@/lib/auth/tokens";
 import { json, error } from "@/lib/api/helpers";
 
+export async function GET(request: NextRequest) {
+  const token = request.nextUrl.searchParams.get("token");
+  return verifyToken(token);
+}
+
 export async function POST(request: NextRequest) {
   const body = await request.json();
   const { token } = body;
+  return verifyToken(token);
+}
+
+async function verifyToken(token: string | null) {
 
   if (!token) {
     return error("Token is required", 400, "validation_error");
