@@ -1,6 +1,6 @@
 import { Resend } from "resend";
 
-const FROM = "Auth <noreply@yourdomain.com>";
+const FROM = "Auth <noreply@dardarliu.com>";
 
 function getResend() {
   return new Resend(process.env.RESEND_API_KEY);

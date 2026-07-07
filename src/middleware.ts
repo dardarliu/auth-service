@@ -20,7 +20,11 @@ export function middleware(request: NextRequest) {
   }
 
   // Reject state-changing requests with missing or invalid Origin
-  if (STATE_CHANGING_METHODS.has(request.method)) {
+  // Exempt token-authenticated pages served by this service (reset-password, verify-email)
+  const selfServedPaths = ["/api/v1/reset-password", "/api/v1/verify-email"];
+  const isSelfServed = selfServedPaths.some((p) => request.nextUrl.pathname === p);
+
+  if (STATE_CHANGING_METHODS.has(request.method) && !isSelfServed) {
     if (!origin || !isAllowedOrigin(origin)) {
       return NextResponse.json(
         { error: "forbidden", message: "Invalid origin" },
@@ -31,8 +35,9 @@ export function middleware(request: NextRequest) {
 
   const response = NextResponse.next();
 
-  // Security headers on all responses
+  // Security headers on all responses (skip CSP for self-served HTML pages)
   for (const [key, value] of Object.entries(SECURITY_HEADERS)) {
+    if (key === "Content-Security-Policy" && isSelfServed) continue;
     response.headers.set(key, value);
   }
 

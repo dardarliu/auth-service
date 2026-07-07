@@ -1,8 +1,10 @@
 # Auth Service
 
-Centralized authentication service that acts as a standalone token issuer for first-party applications. Deployed on Vercel (serverless functions) with Neon (serverless Postgres).
+A login system that handles user accounts, passwords, and sessions for all my apps. Instead of each app managing its own user database, they all rely on this one service to verify who someone is.
 
-All consumers are first-party (same trust boundary), so they call the auth service directly — no OAuth redirect flow needed.
+When a user logs in, this service issues a signed token that other apps can verify independently — no need to call back to the auth service on every request. It handles registration, email verification, password resets, and session management in one place.
+
+Deployed on Vercel with Neon (serverless Postgres). All consumers are first-party (same trust boundary), so they call the auth service directly — no OAuth redirect flow needed.
 
 ## Architecture
 
@@ -58,9 +60,9 @@ Base URL: `/api/v1`
 | `/me` | DELETE | Yes | Soft-delete account (requires password confirmation) |
 | `/sessions` | GET | Yes | List active sessions |
 | `/sessions/:id` | DELETE | Yes | Revoke a specific session |
-| `/verify-email` | POST | No | Consume email verification token |
+| `/verify-email` | GET/POST | No | Verify email via link (GET) or token (POST) |
 | `/forgot-password` | POST | No | Request password reset email |
-| `/reset-password` | POST | No | Consume reset token, change password |
+| `/reset-password` | GET/POST | No | Reset form (GET) or consume token + change password (POST) |
 | `/.well-known/jwks` | GET | No | Public key for JWT verification (cacheable) |
 
 ## Security Design
@@ -70,7 +72,7 @@ Base URL: `/api/v1`
 | | Access Token (JWT) | Refresh Token (Opaque) |
 |---|---|---|
 | Lifetime | 15 minutes | 30 days |
-| Storage | httpOnly/Secure/SameSite=Strict cookie | httpOnly cookie scoped to `/api/v1/refresh` |
+| Storage | httpOnly/Secure/SameSite=None cookie | httpOnly cookie scoped to `/api/v1` |
 | Verification | Stateless (ES256 signature check) | Stateful (DB lookup via SHA-256 hash) |
 | Revocation | Not individually revocable (short-lived) | Immediately revocable |
 

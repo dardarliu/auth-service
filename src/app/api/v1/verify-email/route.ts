@@ -7,7 +7,22 @@ import { json, error } from "@/lib/api/helpers";
 
 export async function GET(request: NextRequest) {
   const token = request.nextUrl.searchParams.get("token");
-  return verifyToken(token);
+  const result = await verifyToken(token);
+  const ok = result.status === 200;
+
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${ok ? "Email Verified" : "Verification Failed"}</title></head>
+<body style="margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0a0a0a;color:#fafafa;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace">
+<div style="text-align:center;max-width:360px;padding:2rem">
+<h1 style="font-size:1.25rem;font-weight:600;margin:0">${ok ? "email verified" : "verification failed"}</h1>
+<p style="color:#737373;font-size:0.8rem;margin-top:0.75rem">${ok ? "your email has been verified. you can now sign in." : "this link is invalid or has expired."}</p>
+</div></body></html>`;
+
+  return new Response(html, {
+    status: ok ? 200 : 400,
+    headers: { "Content-Type": "text/html" },
+  });
 }
 
 export async function POST(request: NextRequest) {
